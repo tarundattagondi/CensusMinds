@@ -35,4 +35,14 @@ export async function getRateLimit() {
   return response.data;
 }
 
+export async function getSimulationsHistory() {
+  const response = await api.get('/api/simulations');
+  return response.data;
+}
+
+export async function getSavedSimulation(simId) {
+  const response = await api.get(`/api/simulations/${simId}`);
+  return response.data;
+}
+
 export default api;

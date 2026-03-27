@@ -252,9 +252,14 @@ export default function Results() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <button onClick={() => navigate('/')} className="text-indigo-400 text-sm hover:underline mb-2 block cursor-pointer">
-              &larr; New Simulation
-            </button>
+            <div className="flex items-center gap-4 mb-2">
+              <button onClick={() => navigate('/')} className="text-indigo-400 text-sm hover:underline cursor-pointer">
+                &larr; New Simulation
+              </button>
+              <button onClick={() => navigate('/history')} className="text-gray-400 text-sm hover:underline cursor-pointer">
+                History
+              </button>
+            </div>
             <h1 className="text-3xl font-bold">Simulation Results</h1>
             {r.policy && (
               <p className="text-gray-400 mt-2 max-w-2xl">"{r.policy}"</p>

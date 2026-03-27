@@ -15,6 +15,7 @@ from backend.services.persona_generator import generate_personas
 from backend.services.llm_service import simulate_batch
 from backend.services.aggregator import aggregate_results
 from backend.services.export_service import generate_pdf, generate_csv
+from backend.services.db_service import save_simulation, list_simulations, get_simulation
 
 app = FastAPI(
     title="CensusMinds",
@@ -97,6 +98,37 @@ async def get_census_data(zip_code: str):
     return data
 
 
+@app.get("/api/simulations")
+async def get_simulations_history():
+    """List all past simulations from the database."""
+    return list_simulations()
+
+
+@app.get("/api/simulations/{sim_id}")
+async def get_saved_simulation(sim_id: str):
+    """Retrieve a saved simulation's full results from the database."""
+    # Check in-memory first
+    if sim_id in simulations and simulations[sim_id]["status"] == "complete":
+        return simulations[sim_id]
+
+    # Check database
+    row = get_simulation(sim_id)
+    if not row:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+
+    # Reconstruct the simulation object for the frontend
+    return {
+        "id": row["id"],
+        "status": "complete",
+        "zip_code": row["zip_code"],
+        "policy": row["policy"],
+        "num_personas": row.get("num_personas", 0),
+        "progress": 100,
+        "results": row["results"],
+        "error": None,
+    }
+
+
 @app.post("/api/simulate")
 async def create_simulation(req: SimulationRequest, background_tasks: BackgroundTasks, demo: bool = Query(default=False)):
     """Start a new policy simulation. Use ?demo=true to load pre-computed demo results."""
@@ -148,6 +180,20 @@ async def create_simulation(req: SimulationRequest, background_tasks: Background
 async def get_simulation_status(sim_id: str):
     """Check the status of a running simulation."""
     if sim_id not in simulations:
+        # Try loading from database
+        row = get_simulation(sim_id)
+        if row:
+            simulations[sim_id] = {
+                "id": row["id"],
+                "status": "complete",
+                "zip_code": row["zip_code"],
+                "policy": row["policy"],
+                "num_personas": row.get("num_personas", 0),
+                "progress": 100,
+                "results": row["results"],
+                "error": None,
+            }
+            return simulations[sim_id]
         raise HTTPException(status_code=404, detail="Simulation not found")
     return simulations[sim_id]
 
@@ -155,11 +201,7 @@ async def get_simulation_status(sim_id: str):
 @app.get("/api/export/{sim_id}/pdf")
 async def export_simulation_pdf(sim_id: str):
     """Export simulation results as a PDF report."""
-    if sim_id not in simulations:
-        raise HTTPException(status_code=404, detail="Simulation not found")
-    sim = simulations[sim_id]
-    if sim["status"] != "complete":
-        raise HTTPException(status_code=400, detail="Simulation not yet complete")
+    sim = await _get_complete_sim(sim_id)
     pdf_bytes = generate_pdf(sim["results"])
     return Response(
         content=pdf_bytes,
@@ -171,17 +213,31 @@ async def export_simulation_pdf(sim_id: str):
 @app.get("/api/export/{sim_id}/csv")
 async def export_simulation_csv(sim_id: str):
     """Export all persona responses as a CSV file."""
-    if sim_id not in simulations:
-        raise HTTPException(status_code=404, detail="Simulation not found")
-    sim = simulations[sim_id]
-    if sim["status"] != "complete":
-        raise HTTPException(status_code=400, detail="Simulation not yet complete")
+    sim = await _get_complete_sim(sim_id)
     csv_str = generate_csv(sim["results"])
     return Response(
         content=csv_str,
         media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename=censusminds_{sim_id[:8]}.csv"},
     )
+
+
+async def _get_complete_sim(sim_id: str) -> dict:
+    """Get a complete simulation from memory or database."""
+    if sim_id in simulations:
+        sim = simulations[sim_id]
+        if sim["status"] == "complete":
+            return sim
+
+    row = get_simulation(sim_id)
+    if row:
+        return {
+            "id": row["id"],
+            "status": "complete",
+            "results": row["results"],
+        }
+
+    raise HTTPException(status_code=404, detail="Simulation not found or not yet complete")
 
 
 async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas: int, api_key: str | None = None):
@@ -222,6 +278,9 @@ async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas:
         sim["status"] = "complete"
         sim["progress"] = 100
         sim["results"] = results
+
+        # Step 5: Save to database
+        save_simulation(sim_id, zip_code, policy, results)
 
     except Exception as e:
         sim["status"] = "error"

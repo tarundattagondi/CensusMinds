@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { startSimulation, getRateLimit } from '../services/api';
 
 const features = [
@@ -85,8 +85,15 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+      {/* Nav */}
+      <div className="max-w-5xl mx-auto px-6 pt-6 flex justify-end">
+        <Link to="/history" className="text-sm text-gray-400 hover:text-indigo-400 transition-colors">
+          View Past Simulations &rarr;
+        </Link>
+      </div>
+
       {/* Hero */}
-      <div className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
+      <div className="max-w-4xl mx-auto px-6 pt-12 pb-16 text-center">
         <h1 className="text-6xl font-bold tracking-tight mb-4">
           Census<span className="text-indigo-400">Minds</span>
         </h1>
