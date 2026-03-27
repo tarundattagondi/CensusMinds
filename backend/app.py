@@ -1,0 +1,125 @@
+import uuid
+import asyncio
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+
+from backend.services.census_service import fetch_demographics
+from backend.services.persona_generator import generate_personas
+from backend.services.llm_service import simulate_batch
+from backend.services.aggregator import aggregate_results
+
+app = FastAPI(
+    title="CensusMinds",
+    description="Census-grounded local policy impact simulator",
+    version="0.1.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# In-memory stores
+census_cache: dict[str, dict] = {}
+simulations: dict[str, dict] = {}
+
+
+class SimulationRequest(BaseModel):
+    zip_code: str
+    policy_description: str
+    num_personas: int = Field(default=100, ge=1, le=500)
+
+
+@app.get("/")
+async def health_check():
+    return {"status": "healthy", "service": "CensusMinds API"}
+
+
+@app.get("/api/census/{zip_code}")
+async def get_census_data(zip_code: str):
+    """Fetch and cache census data for a ZIP code."""
+    if zip_code in census_cache:
+        return census_cache[zip_code]
+
+    try:
+        data = await fetch_demographics(zip_code)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to fetch census data: {str(e)}")
+
+    census_cache[zip_code] = data
+    return data
+
+
+@app.post("/api/simulate")
+async def create_simulation(req: SimulationRequest, background_tasks: BackgroundTasks):
+    """Start a new policy simulation. Returns a simulation ID to poll for results."""
+    sim_id = str(uuid.uuid4())
+    simulations[sim_id] = {
+        "id": sim_id,
+        "status": "pending",
+        "zip_code": req.zip_code,
+        "policy": req.policy_description,
+        "num_personas": req.num_personas,
+        "progress": 0,
+        "results": None,
+        "error": None,
+    }
+
+    background_tasks.add_task(_run_simulation, sim_id, req.zip_code, req.policy_description, req.num_personas)
+    return {"sim_id": sim_id, "status": "pending"}
+
+
+@app.get("/api/simulate/{sim_id}/status")
+async def get_simulation_status(sim_id: str):
+    """Check the status of a running simulation."""
+    if sim_id not in simulations:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+    return simulations[sim_id]
+
+
+async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas: int):
+    """Background task that runs the full simulation pipeline."""
+    sim = simulations[sim_id]
+    try:
+        # Step 1: Fetch census data
+        sim["status"] = "fetching_census"
+        sim["progress"] = 10
+        if zip_code in census_cache:
+            census_data = census_cache[zip_code]
+        else:
+            census_data = await fetch_demographics(zip_code)
+            census_cache[zip_code] = census_data
+
+        # Step 2: Generate personas
+        sim["status"] = "generating_personas"
+        sim["progress"] = 25
+        personas = generate_personas(census_data, n=num_personas)
+
+        # Step 3: Run LLM simulation
+        sim["status"] = "running_simulation"
+        sim["progress"] = 40
+        responses = await simulate_batch(personas, policy, batch_size=10)
+        sim["progress"] = 85
+
+        # Step 4: Aggregate results
+        sim["status"] = "aggregating"
+        sim["progress"] = 90
+        results = aggregate_results(responses)
+        results["zip_code"] = zip_code
+        results["policy"] = policy
+        results["census_snapshot"] = {
+            "total_population": census_data["total_population"],
+            "median_household_income": census_data["median_household_income"],
+        }
+
+        sim["status"] = "complete"
+        sim["progress"] = 100
+        sim["results"] = results
+
+    except Exception as e:
+        sim["status"] = "error"
+        sim["error"] = str(e)
