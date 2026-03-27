@@ -1,5 +1,6 @@
-"""PDF report generator for CensusMinds simulation results."""
+"""Export services — generates PDF reports and CSV files from simulation results."""
 
+import csv
 import io
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -8,6 +9,36 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable,
 )
+
+
+def generate_csv(results: dict) -> str:
+    """Generate a CSV string of all persona responses."""
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "Name", "Age", "Ethnicity", "Income", "Housing", "Commute",
+        "Education", "Stance", "Impact Level", "Reasoning",
+        "Would Attend", "Suggested Modification",
+    ])
+
+    for r in results.get("all_responses", []):
+        writer.writerow([
+            r.get("persona_name", ""),
+            r.get("age", ""),
+            r.get("ethnicity", ""),
+            r.get("income_range", ""),
+            r.get("housing_type", ""),
+            r.get("commute_mode", ""),
+            r.get("education", ""),
+            r.get("stance", ""),
+            r.get("impact_level", ""),
+            r.get("reasoning", ""),
+            r.get("would_attend", ""),
+            r.get("suggested_modification", ""),
+        ])
+
+    return output.getvalue()
 
 
 def generate_pdf(results: dict) -> bytes:
@@ -30,7 +61,11 @@ def generate_pdf(results: dict) -> bytes:
     policy = results.get("policy", "N/A")
     zip_code = results.get("zip_code", "N/A")
     census = results.get("census_snapshot", {})
-    elements.append(Paragraph(f"ZIP Code: {zip_code} | Population: {census.get('total_population', 'N/A'):,} | Median Income: ${census.get('median_household_income', 0):,}", subtitle_style))
+    pop = census.get("total_population", "N/A")
+    income = census.get("median_household_income", 0)
+    pop_str = f"{pop:,}" if isinstance(pop, int) else str(pop)
+    income_str = f"${income:,}" if isinstance(income, int) else str(income)
+    elements.append(Paragraph(f"ZIP Code: {zip_code} | Population: {pop_str} | Median Income: {income_str}", subtitle_style))
     elements.append(Paragraph(f"<b>Policy:</b> {policy}", body_style))
     elements.append(Spacer(1, 12))
     elements.append(HRFlowable(width="100%", color=colors.lightgrey))
@@ -47,8 +82,8 @@ def generate_pdf(results: dict) -> bytes:
         ["Total Personas", str(summary.get('total_personas', 0))],
         ["Would Attend Meeting", f"{results.get('attendance', {}).get('would_attend_pct', 0)}%"],
     ]
-    t = Table(summary_data, colWidths=[2.5 * inch, 4 * inch])
-    t.setStyle(TableStyle([
+
+    table_style = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4338ca')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
@@ -57,11 +92,24 @@ def generate_pdf(results: dict) -> bytes:
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f5f5ff')]),
         ('TOPPADDING', (0, 0), (-1, -1), 6),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-    ]))
+    ])
+    t = Table(summary_data, colWidths=[2.5 * inch, 4 * inch])
+    t.setStyle(table_style)
     elements.append(t)
     elements.append(Spacer(1, 16))
 
-    # Breakdown helper
+    # Breakdown tables
+    breakdown_table_style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4338ca')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f5f5ff')]),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+    ])
+
     def add_breakdown(title, data):
         if not data:
             return
@@ -70,16 +118,7 @@ def generate_pdf(results: dict) -> bytes:
         for group, vals in data.items():
             rows.append([group, f"{vals['support_pct']}%", f"{vals['oppose_pct']}%", str(vals['total'])])
         t = Table(rows, colWidths=[2.5 * inch, 1.25 * inch, 1.25 * inch, 1 * inch])
-        t.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4338ca')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f5f5ff')]),
-            ('TOPPADDING', (0, 0), (-1, -1), 5),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ]))
+        t.setStyle(breakdown_table_style)
         elements.append(t)
         elements.append(Spacer(1, 8))
 
@@ -121,6 +160,37 @@ def generate_pdf(results: dict) -> bytes:
         for m in mods[:10]:
             elements.append(Paragraph(f"<b>{m['persona']}:</b> {m['suggestion']}", body_style))
             elements.append(Spacer(1, 4))
+
+    # All Persona Responses
+    all_responses = results.get("all_responses", [])
+    if all_responses:
+        elements.append(Paragraph("Individual Persona Responses", heading_style))
+        resp_rows = [["Name", "Age", "Stance", "Impact", "Attend", "Reasoning"]]
+        for r in all_responses:
+            reasoning = r.get("reasoning", "")
+            if len(reasoning) > 80:
+                reasoning = reasoning[:77] + "..."
+            resp_rows.append([
+                r.get("persona_name", ""),
+                str(r.get("age", "")),
+                r.get("stance", ""),
+                r.get("impact_level", ""),
+                r.get("would_attend", ""),
+                reasoning,
+            ])
+        resp_table = Table(resp_rows, colWidths=[1.1 * inch, 0.4 * inch, 0.65 * inch, 0.6 * inch, 0.5 * inch, 3.25 * inch])
+        resp_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4338ca')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 7),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f5f5ff')]),
+            ('TOPPADDING', (0, 0), (-1, -1), 3),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        elements.append(resp_table)
 
     # Footer
     elements.append(Spacer(1, 20))

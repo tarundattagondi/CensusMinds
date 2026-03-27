@@ -14,7 +14,7 @@ from backend.services.census_service import fetch_demographics
 from backend.services.persona_generator import generate_personas
 from backend.services.llm_service import simulate_batch
 from backend.services.aggregator import aggregate_results
-from backend.services.export_service import generate_pdf
+from backend.services.export_service import generate_pdf, generate_csv
 
 app = FastAPI(
     title="CensusMinds",
@@ -152,7 +152,7 @@ async def get_simulation_status(sim_id: str):
     return simulations[sim_id]
 
 
-@app.get("/api/simulate/{sim_id}/export")
+@app.get("/api/export/{sim_id}/pdf")
 async def export_simulation_pdf(sim_id: str):
     """Export simulation results as a PDF report."""
     if sim_id not in simulations:
@@ -165,6 +165,22 @@ async def export_simulation_pdf(sim_id: str):
         content=pdf_bytes,
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=censusminds_{sim_id[:8]}.pdf"},
+    )
+
+
+@app.get("/api/export/{sim_id}/csv")
+async def export_simulation_csv(sim_id: str):
+    """Export all persona responses as a CSV file."""
+    if sim_id not in simulations:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+    sim = simulations[sim_id]
+    if sim["status"] != "complete":
+        raise HTTPException(status_code=400, detail="Simulation not yet complete")
+    csv_str = generate_csv(sim["results"])
+    return Response(
+        content=csv_str,
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=censusminds_{sim_id[:8]}.csv"},
     )
 
 
