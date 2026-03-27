@@ -1,0 +1,50 @@
+{
+  "less_than_high_school": {
+    "service": ["Dishwasher", "Janitor", "Housekeeper", "Laundry Worker", "Fast Food Cook"],
+    "construction": ["Construction Laborer", "Roofer", "Painter Helper", "Demolition Worker", "Landscaper"],
+    "agriculture": ["Farm Worker", "Crop Picker", "Nursery Worker", "Animal Caretaker", "Groundskeeper"],
+    "manufacturing": ["Assembly Line Worker", "Packaging Worker", "Machine Feeder", "Sorter", "Hand Laborer"],
+    "retail": ["Stock Clerk", "Cashier", "Cart Attendant", "Store Cleaner", "Warehouse Helper"]
+  },
+  "high_school": {
+    "service": ["Barista", "Server", "Bartender", "Hotel Front Desk Clerk", "Security Guard"],
+    "construction": ["Carpenter", "Electrician Apprentice", "Plumber Apprentice", "HVAC Technician", "Welder"],
+    "manufacturing": ["Machine Operator", "Quality Inspector", "Forklift Operator", "CNC Operator", "Maintenance Worker"],
+    "retail": ["Sales Associate", "Customer Service Rep", "Store Manager", "Warehouse Worker", "Delivery Driver"],
+    "transportation": ["Bus Driver", "Truck Driver", "Taxi Driver", "Courier", "Dispatcher"],
+    "office": ["Receptionist", "File Clerk", "Data Entry Clerk", "Mail Carrier", "Office Assistant"]
+  },
+  "some_college": {
+    "service": ["Dental Assistant", "Medical Assistant", "Veterinary Technician", "Pharmacy Technician", "Fitness Trainer"],
+    "technology": ["IT Support Specialist", "Computer Technician", "Help Desk Analyst", "Web Designer", "Cable Installer"],
+    "business": ["Insurance Agent", "Real Estate Agent", "Bookkeeper", "Payroll Clerk", "Bank Teller"],
+    "trades": ["Electrician", "Plumber", "HVAC Specialist", "Auto Mechanic", "Aircraft Mechanic"],
+    "public_safety": ["Police Officer", "Firefighter", "EMT", "Corrections Officer", "911 Dispatcher"]
+  },
+  "associates": {
+    "healthcare": ["Registered Nurse (ADN)", "Dental Hygienist", "Respiratory Therapist", "Radiologic Technologist", "Physical Therapy Assistant"],
+    "technology": ["Network Technician", "Database Administrator", "Web Developer", "Systems Administrator", "Cybersecurity Analyst"],
+    "business": ["Paralegal", "Accounting Clerk", "Office Manager", "Executive Assistant", "Human Resources Assistant"],
+    "engineering": ["Engineering Technician", "Drafting Technician", "Surveying Technician", "CAD Technician", "Lab Technician"],
+    "education": ["Teacher Aide", "Library Technician", "Preschool Teacher", "Tutor", "Childcare Director"]
+  },
+  "bachelors": {
+    "technology": ["Software Developer", "Data Analyst", "UX Designer", "Product Manager", "Systems Engineer"],
+    "business": ["Marketing Manager", "Financial Analyst", "Account Manager", "Management Consultant", "Human Resources Manager"],
+    "healthcare": ["Registered Nurse (BSN)", "Health Administrator", "Public Health Analyst", "Clinical Research Coordinator", "Dietitian"],
+    "engineering": ["Civil Engineer", "Mechanical Engineer", "Electrical Engineer", "Chemical Engineer", "Environmental Engineer"],
+    "education": ["Elementary Teacher", "High School Teacher", "Special Education Teacher", "School Counselor", "Curriculum Developer"],
+    "science": ["Research Scientist", "Biologist", "Chemist", "Environmental Scientist", "Geologist"],
+    "media": ["Journalist", "Graphic Designer", "Public Relations Specialist", "Technical Writer", "Content Strategist"]
+  },
+  "graduate": {
+    "technology": ["Senior Software Engineer", "Machine Learning Engineer", "Data Scientist", "Chief Technology Officer", "Solutions Architect"],
+    "business": ["Investment Banker", "Management Director", "Strategy Consultant", "Chief Financial Officer", "Venture Capitalist"],
+    "healthcare": ["Physician", "Surgeon", "Psychiatrist", "Pharmacist", "Nurse Practitioner"],
+    "law": ["Attorney", "Corporate Lawyer", "Public Defender", "Judge", "Legal Counsel"],
+    "education": ["Professor", "University Administrator", "Research Director", "Dean", "Educational Psychologist"],
+    "science": ["Senior Research Scientist", "Principal Investigator", "Lab Director", "Biostatistician", "Epidemiologist"],
+    "engineering": ["Senior Systems Architect", "Engineering Director", "Principal Engineer", "R&D Manager", "Patent Engineer"],
+    "government": ["Policy Analyst", "Diplomat", "City Planner", "Program Director", "Legislative Aide"]
+  }
+}

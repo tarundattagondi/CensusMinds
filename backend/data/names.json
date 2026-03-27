@@ -1,0 +1,37 @@
+{
+  "white": {
+    "first_male": ["James", "Robert", "John", "Michael", "David", "William", "Richard", "Thomas", "Mark", "Steven", "Kevin", "Brian", "Timothy", "Scott", "Jeffrey", "Ryan", "Nicholas", "Eric", "Andrew", "Matthew"],
+    "first_female": ["Mary", "Jennifer", "Linda", "Patricia", "Elizabeth", "Susan", "Jessica", "Sarah", "Karen", "Lisa", "Nancy", "Margaret", "Sandra", "Ashley", "Emily", "Donna", "Michelle", "Carol", "Amanda", "Melissa"],
+    "last": ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Wilson", "Anderson", "Taylor", "Thomas", "Moore", "Jackson", "Martin", "Thompson", "White", "Harris", "Clark", "Lewis", "Robinson"]
+  },
+  "black": {
+    "first_male": ["Marcus", "Darius", "Terrence", "Andre", "Jamal", "DeShawn", "Malik", "Tyrone", "Brandon", "Dante", "Xavier", "Isaiah", "Elijah", "Jordan", "Anthony", "Christopher", "Kevin", "Michael", "James", "Robert"],
+    "first_female": ["Aaliyah", "Imani", "Jasmine", "Keisha", "Latoya", "Monique", "Tamika", "Ebony", "Destiny", "Diamond", "Brianna", "Tiffany", "Crystal", "Shaniqua", "Tanisha", "Alicia", "Nicole", "Michelle", "Ashley", "Brenda"],
+    "last": ["Washington", "Jefferson", "Robinson", "Walker", "Green", "Hall", "Allen", "Young", "King", "Wright", "Scott", "Adams", "Baker", "Carter", "Mitchell", "Turner", "Parker", "Evans", "Edwards", "Collins"]
+  },
+  "asian": {
+    "first_male": ["Wei", "Jun", "Hiroshi", "Takeshi", "Min-Jun", "Sanjay", "Raj", "Amit", "Chen", "Liang", "Yuto", "Haruto", "Jin", "Sung", "Arjun", "Ravi", "Kevin", "David", "Andrew", "Daniel"],
+    "first_female": ["Mei", "Yuki", "Sakura", "Priya", "Ananya", "Li", "Xiao", "Hana", "Min", "Soo-Yeon", "Aiko", "Rina", "Deepa", "Kavya", "Neha", "Grace", "Emily", "Jennifer", "Michelle", "Linda"],
+    "last": ["Wang", "Li", "Zhang", "Chen", "Liu", "Kim", "Park", "Lee", "Nguyen", "Tran", "Patel", "Shah", "Singh", "Kumar", "Tanaka", "Yamamoto", "Suzuki", "Takahashi", "Watanabe", "Huang"]
+  },
+  "hispanic": {
+    "first_male": ["Carlos", "Miguel", "Jose", "Luis", "Juan", "Diego", "Alejandro", "Fernando", "Ricardo", "Eduardo", "Roberto", "Antonio", "Francisco", "Gabriel", "Rafael", "Sergio", "Andres", "Marco", "Javier", "Daniel"],
+    "first_female": ["Maria", "Sofia", "Isabella", "Valentina", "Camila", "Gabriela", "Lucia", "Elena", "Rosa", "Carmen", "Ana", "Daniela", "Fernanda", "Alejandra", "Mariana", "Carolina", "Laura", "Andrea", "Diana", "Adriana"],
+    "last": ["Garcia", "Rodriguez", "Martinez", "Lopez", "Hernandez", "Gonzalez", "Perez", "Sanchez", "Ramirez", "Torres", "Flores", "Rivera", "Gomez", "Diaz", "Reyes", "Cruz", "Morales", "Ortiz", "Gutierrez", "Chavez"]
+  },
+  "native_american": {
+    "first_male": ["Jay", "Kyle", "Travis", "Cody", "Tyler", "Jesse", "Dakota", "Hunter", "Logan", "River", "Michael", "James", "John", "David", "Robert", "William", "Joseph", "Daniel", "Matthew", "Christopher"],
+    "first_female": ["Autumn", "Sierra", "Dakota", "Cheyenne", "Willow", "Sage", "Raven", "Summer", "Sky", "Luna", "Jennifer", "Jessica", "Ashley", "Amanda", "Sarah", "Mary", "Patricia", "Michelle", "Lisa", "Nicole"],
+    "last": ["Begay", "Yazzie", "Locklear", "Smith", "Johnson", "Jones", "Tsosie", "Benally", "Nez", "Thomas", "Williams", "Brown", "Davis", "Wilson", "Oxendine", "Chavez", "Martinez", "Garcia", "Lowery", "Hunt"]
+  },
+  "pacific_islander": {
+    "first_male": ["Kai", "Manu", "Tane", "Sione", "Tevita", "Liam", "Ethan", "Noah", "Keanu", "Makoa", "Kalani", "Koa", "Ioane", "Peni", "Sela", "James", "Michael", "David", "John", "William"],
+    "first_female": ["Moana", "Leilani", "Malia", "Sina", "Hina", "Aroha", "Teuila", "Kalena", "Mahina", "Lani", "Tiare", "Mere", "Nani", "Pua", "Aloha", "Jessica", "Jennifer", "Michelle", "Lisa", "Amanda"],
+    "last": ["Tuilagi", "Savea", "Tuivasa", "Taufa", "Folau", "Mauga", "Faletoi", "Ioane", "Vunipola", "Matagi", "Kealoha", "Kamaka", "Nakamura", "Samoa", "Tonga", "Taito", "Manu", "Latu", "Finau", "Sopoaga"]
+  },
+  "two_or_more": {
+    "first_male": ["Jordan", "Cameron", "Tyler", "Jayden", "Ethan", "Noah", "Elijah", "Aiden", "Mason", "Logan", "Caleb", "Lucas", "Ryan", "Nathan", "Isaiah", "Miles", "Kai", "Adrian", "Tristan", "Marcus"],
+    "first_female": ["Maya", "Zoe", "Aria", "Naomi", "Amara", "Luna", "Layla", "Isla", "Mia", "Ava", "Riley", "Chloe", "Kiara", "Jasmine", "Aaliyah", "Hailey", "Jade", "Sienna", "Skylar", "Mackenzie"],
+    "last": ["Williams", "Johnson", "Smith", "Davis", "Brown", "Jones", "Miller", "Wilson", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Garcia", "Lee", "Robinson", "Clark", "Lewis"]
+  }
+}
