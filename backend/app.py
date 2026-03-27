@@ -2,12 +2,14 @@ import uuid
 import asyncio
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
 from backend.services.census_service import fetch_demographics
 from backend.services.persona_generator import generate_personas
 from backend.services.llm_service import simulate_batch
 from backend.services.aggregator import aggregate_results
+from backend.services.export_service import generate_pdf
 
 app = FastAPI(
     title="CensusMinds",
@@ -79,6 +81,22 @@ async def get_simulation_status(sim_id: str):
     if sim_id not in simulations:
         raise HTTPException(status_code=404, detail="Simulation not found")
     return simulations[sim_id]
+
+
+@app.get("/api/simulate/{sim_id}/export")
+async def export_simulation_pdf(sim_id: str):
+    """Export simulation results as a PDF report."""
+    if sim_id not in simulations:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+    sim = simulations[sim_id]
+    if sim["status"] != "complete":
+        raise HTTPException(status_code=400, detail="Simulation not yet complete")
+    pdf_bytes = generate_pdf(sim["results"])
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=censusminds_{sim_id[:8]}.pdf"},
+    )
 
 
 async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas: int):
