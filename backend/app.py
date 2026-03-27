@@ -26,11 +26,12 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://censusminds.vercel.app",
-        "https://*.vercel.app",
+        "https://census-minds.vercel.app",
+        "https://census-minds-tarundattagondis-projects.vercel.app",
         "http://localhost:5173",
         "http://localhost:3000",
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
