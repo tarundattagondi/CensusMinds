@@ -44,7 +44,7 @@ Demo mode is available on the landing page -- try the full dashboard without any
 - [x] **Demographic Breakdowns** -- support/oppose split by income, age, commute mode, housing type, education, and ethnicity
 - [x] **Hidden Impact Detection** -- identifies groups with HIGH/CRITICAL impact but low likelihood of attending public meetings
 - [x] **Individual Persona Stories** -- read each persona's unique reasoning, impact assessment, and suggested policy modifications
-- [x] **Rate Limiting** -- 5 free simulations per day
+- [x] **Rate Limiting** -- 2 free simulations per day
 - [x] **Bring Your Own Key** -- paste your own Anthropic API key for unlimited simulations
 - [x] **Download Results** -- export full simulation results as a styled PDF report or CSV data file
 - [x] **Simulation History** -- save, browse, and revisit past simulation results

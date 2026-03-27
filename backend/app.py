@@ -42,7 +42,7 @@ census_cache: dict[str, dict] = {}
 simulations: dict[str, dict] = {}
 
 # Rate limiting
-DAILY_LIMIT = 5
+DAILY_LIMIT = 2
 RATE_LIMIT_FILE = Path(__file__).resolve().parent / "data" / "rate_limit.json"
 
 
