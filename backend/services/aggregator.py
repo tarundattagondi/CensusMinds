@@ -211,4 +211,5 @@ def aggregate_results(responses: list[dict]) -> dict:
             for r in responses
             if r.get("suggested_modification")
         ],
+        "all_responses": responses,
     }
