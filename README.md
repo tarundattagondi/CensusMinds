@@ -18,13 +18,16 @@ CensusMinds pulls real demographic data from the US Census Bureau for any ZIP co
 
 | Layer | Technology |
 |-------|-----------|
-| Backend API | FastAPI + Uvicorn |
-| Census Data | US Census Bureau ACS 5-Year API |
-| AI Simulation | Anthropic Claude API (claude-sonnet-4-20250514) |
-| HTTP Client | httpx (async) |
-| Database | Supabase (planned) |
-| Frontend | React (planned) |
-| Language | Python 3.11+ |
+| Backend API | [FastAPI](https://fastapi.tiangolo.com/) + [Uvicorn](https://www.uvicorn.org/) |
+| Census Data | [US Census Bureau ACS 5-Year API](https://www.census.gov/data/developers/data-sets/acs-5year.html) |
+| AI Simulation | [Anthropic Claude API](https://docs.anthropic.com/) (claude-sonnet-4-20250514) |
+| HTTP Client | [httpx](https://www.python-httpx.org/) (async) |
+| PDF Export | [ReportLab](https://www.reportlab.com/) |
+| Frontend | [React](https://react.dev/) + [Vite](https://vite.dev/) |
+| Charts | [Recharts](https://recharts.org/) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) |
+| Database | [Supabase](https://supabase.com/) (planned) |
+| Language | Python 3.11+ / JavaScript (ES2022) |
 
 ## Setup
 
@@ -33,24 +36,54 @@ CensusMinds pulls real demographic data from the US Census Bureau for any ZIP co
 git clone https://github.com/tarundattagondi/CensusMinds.git
 cd CensusMinds
 
-# Create virtual environment
+# Create virtual environment and install backend dependencies
 python3 -m venv .venv
 source .venv/bin/activate
-
-# Install dependencies
 pip install -r requirements.txt
+
+# Install frontend dependencies
+cd frontend
+npm install
+cd ..
 
 # Configure environment variables
 cp .env.example .env
 # Edit .env and add your API keys:
 #   CENSUS_API_KEY    — get one at https://api.census.gov/data/key_signup.html (optional, works without)
 #   ANTHROPIC_API_KEY — get one at https://console.anthropic.com/
-#   SUPABASE_URL      — from your Supabase project settings
-#   SUPABASE_KEY      — from your Supabase project settings
-
-# Run the API server
-uvicorn backend.app:app --reload
+#   SUPABASE_URL      — from your Supabase project settings (optional)
+#   SUPABASE_KEY      — from your Supabase project settings (optional)
 ```
+
+## Running the App
+
+**Option 1: Run script (both servers at once)**
+```bash
+./run.sh
+```
+
+**Option 2: Run separately**
+```bash
+# Terminal 1 — Backend
+source .venv/bin/activate
+uvicorn backend.app:app --reload --port 8000
+
+# Terminal 2 — Frontend
+cd frontend
+npm run dev
+```
+
+- Backend: http://localhost:8000
+- Frontend: http://localhost:5173
+
+## Demo Mode
+
+Don't have API keys? Try the demo mode which uses pre-loaded simulation results — no API calls needed.
+
+- **Frontend:** Click "or try a demo with pre-loaded results" on the landing page
+- **API:** `POST /api/simulate?demo=true` with any request body
+
+Demo uses ZIP 22030 (Fairfax, VA) with a bike lane policy and 20 pre-computed persona responses.
 
 ## API Endpoints
 
@@ -64,6 +97,8 @@ Fetch cached census demographics for a ZIP code.
 
 ### `POST /api/simulate`
 Start a new policy simulation. Runs in the background and returns a simulation ID.
+
+**Query params:** `?demo=true` to use pre-loaded demo results.
 
 **Request body:**
 ```json
@@ -85,26 +120,8 @@ Start a new policy simulation. Runs in the background and returns a simulation I
 ### `GET /api/simulate/{sim_id}/status`
 Poll simulation progress. Returns status (`pending`, `fetching_census`, `generating_personas`, `running_simulation`, `aggregating`, `complete`, `error`), progress (0-100), and full results when complete.
 
-**Example response (complete):**
-```json
-{
-  "id": "uuid-here",
-  "status": "complete",
-  "progress": 100,
-  "results": {
-    "summary": {
-      "support_pct": 72.0,
-      "oppose_pct": 28.0
-    },
-    "breakdown_by_income": { "...": "..." },
-    "breakdown_by_age_group": { "...": "..." },
-    "hidden_impacts": [ "..." ],
-    "top_concerns": [ "..." ],
-    "top_benefits": [ "..." ],
-    "suggested_modifications": [ "..." ]
-  }
-}
-```
+### `GET /api/simulate/{sim_id}/export`
+Download simulation results as a PDF report.
 
 ## Running Tests
 
@@ -118,12 +135,16 @@ python backend/tests/test_full_simulation.py
 
 ## Example Output
 
-<!-- Add screenshot here -->
-*Screenshot placeholder — run the end-to-end test to see full output*
+<!-- Add screenshots here -->
+*Screenshots placeholder — run the app or use demo mode to see the full dashboard*
 
 ## License
 
 MIT
+
+## Built With
+
+Census API | Claude API | FastAPI | React | Recharts | Tailwind CSS | ReportLab
 
 ## Built By
 

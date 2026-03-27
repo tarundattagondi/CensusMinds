@@ -1,3 +1,5 @@
+"""Census data service — fetches real demographics from the US Census ACS 5-Year API."""
+
 import os
 import httpx
 from dotenv import load_dotenv

@@ -1,3 +1,5 @@
+"""Application configuration — loads environment variables from .env."""
+
 import os
 from dotenv import load_dotenv
 

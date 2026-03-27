@@ -1,3 +1,5 @@
+"""LLM simulation service — runs each persona through Claude to evaluate a policy."""
+
 import os
 import asyncio
 import json

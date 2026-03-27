@@ -1,3 +1,5 @@
+"""CensusMinds API — FastAPI application for census-grounded policy simulation."""
+
 import uuid
 import json
 import asyncio

@@ -1,3 +1,5 @@
+"""Aggregation service — computes demographic breakdowns, hidden impacts, and themes."""
+
 import re
 from collections import Counter
 

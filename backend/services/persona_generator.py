@@ -1,3 +1,5 @@
+"""Persona generator — creates statistically accurate residents from census distributions."""
+
 import json
 import random
 from pathlib import Path
