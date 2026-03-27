@@ -16,11 +16,14 @@ async def _fetch_table(zcta: str, table: str, fields: list[str]) -> dict:
         "get": ",".join(fields),
         "for": f"zip code tabulation area:{zcta}",
     }
-    if CENSUS_API_KEY:
-        params["key"] = CENSUS_API_KEY
+    if CENSUS_API_KEY and CENSUS_API_KEY.strip():
+        params["key"] = CENSUS_API_KEY.strip()
     async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
         resp = await client.get(BASE_URL, params=params)
         resp.raise_for_status()
+        content_type = resp.headers.get("content-type", "")
+        if "json" not in content_type and "text/html" in content_type:
+            raise ValueError(f"Census API returned HTML instead of JSON (likely invalid API key). URL: {resp.url}")
         data = resp.json()
 
     headers = data[0]
