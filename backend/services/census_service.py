@@ -13,9 +13,10 @@ async def _fetch_table(zcta: str, table: str, fields: list[str]) -> dict:
     params = {
         "get": ",".join(fields),
         "for": f"zip code tabulation area:{zcta}",
-        "key": CENSUS_API_KEY,
     }
-    async with httpx.AsyncClient(timeout=30) as client:
+    if CENSUS_API_KEY:
+        params["key"] = CENSUS_API_KEY
+    async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
         resp = await client.get(BASE_URL, params=params)
         resp.raise_for_status()
         data = resp.json()
@@ -66,13 +67,13 @@ async def fetch_demographics(zip_code: str) -> dict:
         "DP05_0016PE",  # 75-84
         "DP05_0017PE",  # 85+
         # Race/ethnicity (percent)
-        "DP05_0077PE",  # White alone, not Hispanic
-        "DP05_0078PE",  # Black alone, not Hispanic
-        "DP05_0080PE",  # Asian alone, not Hispanic
+        "DP05_0037PE",  # White alone
+        "DP05_0038PE",  # Black or African American alone
+        "DP05_0044PE",  # Asian alone
         "DP05_0071PE",  # Hispanic or Latino
-        "DP05_0079PE",  # American Indian/Alaska Native alone, not Hispanic
-        "DP05_0081PE",  # Native Hawaiian/Pacific Islander alone, not Hispanic
-        "DP05_0083PE",  # Two or more races, not Hispanic
+        "DP05_0039PE",  # American Indian/Alaska Native alone
+        "DP05_0052PE",  # Native Hawaiian/Pacific Islander alone
+        "DP05_0057PE",  # Two or more races
     ]
 
     # DP03 - Economic characteristics (income, employment, commute)
@@ -152,13 +153,13 @@ async def fetch_demographics(zip_code: str) -> dict:
             "85_plus": _pct(dp05, "DP05_0017PE"),
         },
         "race_ethnicity": {
-            "white": _pct(dp05, "DP05_0077PE"),
-            "black": _pct(dp05, "DP05_0078PE"),
-            "asian": _pct(dp05, "DP05_0080PE"),
+            "white": _pct(dp05, "DP05_0037PE"),
+            "black": _pct(dp05, "DP05_0038PE"),
+            "asian": _pct(dp05, "DP05_0044PE"),
             "hispanic": _pct(dp05, "DP05_0071PE"),
-            "native_american": _pct(dp05, "DP05_0079PE"),
-            "pacific_islander": _pct(dp05, "DP05_0081PE"),
-            "two_or_more": _pct(dp05, "DP05_0083PE"),
+            "native_american": _pct(dp05, "DP05_0039PE"),
+            "pacific_islander": _pct(dp05, "DP05_0052PE"),
+            "two_or_more": _pct(dp05, "DP05_0057PE"),
         },
         "income_brackets": {
             "under_10k": _pct(dp03, "DP03_0052PE"),
