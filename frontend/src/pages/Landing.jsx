@@ -39,6 +39,18 @@ export default function Landing() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  async function handleDemo() {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await startSimulation('22030', 'demo', 20, true);
+      navigate(`/results/${data.sim_id}`);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to load demo. Is the backend running?');
+      setLoading(false);
+    }
+  }
+
   async function handleSimulate(e) {
     e.preventDefault();
     if (!zipCode.trim() || !policy.trim()) {
@@ -112,6 +124,17 @@ export default function Landing() {
           >
             {loading ? 'Starting Simulation...' : 'Simulate'}
           </button>
+
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              disabled={loading}
+              onClick={handleDemo}
+              className="text-sm text-gray-400 hover:text-indigo-400 transition-colors cursor-pointer"
+            >
+              or try a demo with pre-loaded results &rarr;
+            </button>
+          </div>
         </form>
       </div>
 

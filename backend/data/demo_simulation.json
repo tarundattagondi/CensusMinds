@@ -1,0 +1,266 @@
+{
+  "zip_code": "22030",
+  "policy": "The city is proposing to remove 200 street parking spots downtown to add protected bike lanes on Main Street",
+  "census_snapshot": {
+    "total_population": 61665,
+    "median_household_income": 137664
+  },
+  "summary": {
+    "total_personas": 20,
+    "valid_responses": 20,
+    "support_pct": 55.0,
+    "oppose_pct": 45.0,
+    "support_count": 11,
+    "oppose_count": 9
+  },
+  "impact_distribution": {
+    "MEDIUM": 35.0,
+    "HIGH": 25.0,
+    "LOW": 25.0,
+    "CRITICAL": 10.0,
+    "NONE": 5.0
+  },
+  "attendance": {
+    "would_attend_pct": 45.0,
+    "would_not_attend_pct": 55.0
+  },
+  "breakdown_by_income": {
+    "Under $10,000": { "support_pct": 75.0, "oppose_pct": 25.0, "total": 2 },
+    "$25,000-$34,999": { "support_pct": 66.7, "oppose_pct": 33.3, "total": 3 },
+    "$50,000-$74,999": { "support_pct": 60.0, "oppose_pct": 40.0, "total": 3 },
+    "$75,000-$99,999": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 2 },
+    "$100,000-$149,999": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 4 },
+    "$150,000-$199,999": { "support_pct": 33.3, "oppose_pct": 66.7, "total": 3 },
+    "$200,000+": { "support_pct": 33.3, "oppose_pct": 66.7, "total": 3 }
+  },
+  "breakdown_by_age_group": {
+    "Under 18": { "support_pct": 100.0, "oppose_pct": 0.0, "total": 2 },
+    "18-24": { "support_pct": 75.0, "oppose_pct": 25.0, "total": 4 },
+    "25-34": { "support_pct": 66.7, "oppose_pct": 33.3, "total": 3 },
+    "35-44": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 4 },
+    "45-54": { "support_pct": 33.3, "oppose_pct": 66.7, "total": 3 },
+    "55-64": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 2 },
+    "65+": { "support_pct": 0.0, "oppose_pct": 100.0, "total": 2 }
+  },
+  "breakdown_by_commute": {
+    "Drives alone": { "support_pct": 28.6, "oppose_pct": 71.4, "total": 7 },
+    "Work from home": { "support_pct": 60.0, "oppose_pct": 40.0, "total": 5 },
+    "Public transit": { "support_pct": 100.0, "oppose_pct": 0.0, "total": 3 },
+    "Carpool": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 2 },
+    "Walks": { "support_pct": 100.0, "oppose_pct": 0.0, "total": 2 },
+    "Other": { "support_pct": 100.0, "oppose_pct": 0.0, "total": 1 }
+  },
+  "breakdown_by_housing": {
+    "Homeowner": { "support_pct": 41.7, "oppose_pct": 58.3, "total": 12 },
+    "Renter": { "support_pct": 75.0, "oppose_pct": 25.0, "total": 8 }
+  },
+  "breakdown_by_education": {
+    "Graduate degree": { "support_pct": 57.1, "oppose_pct": 42.9, "total": 7 },
+    "Bachelor's degree": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 6 },
+    "Some college": { "support_pct": 66.7, "oppose_pct": 33.3, "total": 3 },
+    "High school diploma": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 2 },
+    "Associate's degree": { "support_pct": 50.0, "oppose_pct": 50.0, "total": 2 }
+  },
+  "breakdown_by_ethnicity": {
+    "White": { "support_pct": 44.4, "oppose_pct": 55.6, "total": 9 },
+    "Asian": { "support_pct": 60.0, "oppose_pct": 40.0, "total": 5 },
+    "Hispanic": { "support_pct": 66.7, "oppose_pct": 33.3, "total": 3 },
+    "Black": { "support_pct": 66.7, "oppose_pct": 33.3, "total": 3 }
+  },
+  "top_concerns": [
+    "Loss of parking will hurt small business revenue downtown, especially restaurants that rely on drive-in customers",
+    "Elderly residents and those with mobility issues depend on nearby parking to access medical offices on Main Street",
+    "200 spots is too many to remove at once — the parking garage is already at capacity during weekday afternoons",
+    "Construction period will create months of traffic congestion and detours through residential neighborhoods",
+    "Bike lanes will go largely unused during winter months while the parking shortage persists year-round"
+  ],
+  "top_benefits": [
+    "Protected bike lanes make cycling safer for families and kids commuting to school",
+    "Reduced car dependency means lower carbon emissions and better air quality for the whole community",
+    "Bike infrastructure increases property values and attracts younger professionals to the area",
+    "Less car traffic downtown creates a more walkable, livable community center",
+    "Encourages healthier transportation alternatives and reduces healthcare costs long-term"
+  ],
+  "hidden_impacts": [
+    {
+      "group": "income_range: Under $10,000",
+      "high_impact_count": 2,
+      "would_not_attend_count": 2,
+      "total_in_group": 2,
+      "example_personas": ["Maria Santos", "DeShawn Williams"],
+      "risk": "These residents are significantly impacted but unlikely to voice concerns at public meetings."
+    },
+    {
+      "group": "commute_mode: Drives alone",
+      "high_impact_count": 5,
+      "would_not_attend_count": 3,
+      "total_in_group": 7,
+      "example_personas": ["Robert Miller", "Karen Thompson", "James Wilson"],
+      "risk": "These residents are significantly impacted but unlikely to voice concerns at public meetings."
+    }
+  ],
+  "suggested_modifications": [
+    { "persona": "Sarah Chen", "suggestion": "Phase the project over 2 years, removing 50 spots at a time and measuring business impact before continuing" },
+    { "persona": "Marcus Washington", "suggestion": "Add a free shuttle service from the parking garage to Main Street businesses during the transition" },
+    { "persona": "Emily Rodriguez", "suggestion": "Include bike-share stations at both ends of the bike lane so people don't need to own a bike" },
+    { "persona": "Robert Miller", "suggestion": "Keep 30-minute parking spots for quick errands and only remove all-day parking" },
+    { "persona": "Priya Patel", "suggestion": "Add covered bike parking and repair stations to encourage year-round cycling" },
+    { "persona": "James Wilson", "suggestion": "Build a new parking structure before removing street spots to maintain net parking capacity" },
+    { "persona": "Aaliyah Jefferson", "suggestion": "Reserve accessible parking spots near medical offices for disabled and elderly residents" },
+    { "persona": "Wei Zhang", "suggestion": "Create loading zones for delivery trucks so they don't block the bike lanes" },
+    { "persona": "Karen Thompson", "suggestion": "Install traffic-calming measures on residential streets to prevent cut-through traffic" },
+    { "persona": "Carlos Martinez", "suggestion": "Offer tax incentives to downtown businesses that install bike racks for customers" },
+    { "persona": "Jessica Anderson", "suggestion": "Add greenery and benches along the bike lane to create a pleasant community space" },
+    { "persona": "DeShawn Williams", "suggestion": "Ensure the bike lanes connect to the existing trail network for practical commuting routes" },
+    { "persona": "Linda Park", "suggestion": "Run a 6-month pilot on two blocks before committing to the full Main Street conversion" },
+    { "persona": "Maria Santos", "suggestion": "Include better bus stop infrastructure since many low-income residents rely on public transit" },
+    { "persona": "Tyler Moore", "suggestion": "Add protected intersections at major cross streets — the bike lanes are only safe if the crossings are too" },
+    { "persona": "Sakura Kim", "suggestion": "Create a community advisory board with residents from all income levels to oversee implementation" },
+    { "persona": "Brandon Scott", "suggestion": "Extend bike lane hours — make them car-free during peak hours but allow parking during off-peak" },
+    { "persona": "Valentina Cruz", "suggestion": "Partner with local schools to create a safe-routes-to-school program using the new bike lanes" },
+    { "persona": "Andrew Davis", "suggestion": "Mandate that ride-share pickup/dropoff zones are clearly marked to avoid conflicts with cyclists" },
+    { "persona": "Jordan Taylor", "suggestion": "Install real-time parking availability signs to direct drivers to open spots more efficiently" }
+  ],
+  "all_responses": [
+    {
+      "persona_id": 1, "persona_name": "Sarah Chen", "age": 32, "income_range": "$100,000-$149,999",
+      "housing_type": "Renter", "commute_mode": "Public transit", "education": "Graduate degree", "ethnicity": "Asian",
+      "stance": "SUPPORT", "impact_level": "MEDIUM",
+      "reasoning": "As a public transit commuter, I rarely need street parking downtown and would love safer cycling options for weekend errands. The bike lanes could reduce traffic congestion that delays my bus. More sustainable transport options align with my environmentally conscious values.",
+      "would_attend": "YES", "suggested_modification": "Phase the project over 2 years, removing 50 spots at a time and measuring business impact before continuing"
+    },
+    {
+      "persona_id": 2, "persona_name": "Marcus Washington", "age": 45, "income_range": "$75,000-$99,999",
+      "housing_type": "Homeowner", "commute_mode": "Drives alone", "education": "Bachelor's degree", "ethnicity": "Black",
+      "stance": "OPPOSE", "impact_level": "HIGH",
+      "reasoning": "I drive to work every day and park on Main Street near my office. Losing 200 spots would force me into the expensive parking garage or add 15 minutes to my commute finding street parking further away. This directly impacts my wallet and daily schedule.",
+      "would_attend": "YES", "suggested_modification": "Add a free shuttle service from the parking garage to Main Street businesses during the transition"
+    },
+    {
+      "persona_id": 3, "persona_name": "Emily Rodriguez", "age": 24, "income_range": "$25,000-$34,999",
+      "housing_type": "Renter", "commute_mode": "Walks", "education": "Some college", "ethnicity": "Hispanic",
+      "stance": "SUPPORT", "impact_level": "LOW",
+      "reasoning": "I walk to work and don't own a car, so losing parking spots doesn't affect me at all. Protected bike lanes would give me a new safe way to get around town. I think this makes downtown more accessible for people like me who can't afford a car.",
+      "would_attend": "NO", "suggested_modification": "Include bike-share stations at both ends of the bike lane so people don't need to own a bike"
+    },
+    {
+      "persona_id": 4, "persona_name": "Robert Miller", "age": 58, "income_range": "$200,000+",
+      "housing_type": "Homeowner", "commute_mode": "Drives alone", "education": "Graduate degree", "ethnicity": "White",
+      "stance": "OPPOSE", "impact_level": "HIGH",
+      "reasoning": "I own a consulting firm on Main Street and my clients expect convenient parking. Removing 200 spots would drive clients to competitors in other towns. The economic impact on downtown businesses hasn't been adequately studied.",
+      "would_attend": "YES", "suggested_modification": "Keep 30-minute parking spots for quick errands and only remove all-day parking"
+    },
+    {
+      "persona_id": 5, "persona_name": "Priya Patel", "age": 29, "income_range": "$100,000-$149,999",
+      "housing_type": "Renter", "commute_mode": "Work from home", "education": "Graduate degree", "ethnicity": "Asian",
+      "stance": "SUPPORT", "impact_level": "LOW",
+      "reasoning": "Working from home means I rarely need downtown parking. I'd love to bike to restaurants and shops on weekends with a protected lane. This aligns with the kind of progressive, walkable community I want to live in.",
+      "would_attend": "NO", "suggested_modification": "Add covered bike parking and repair stations to encourage year-round cycling"
+    },
+    {
+      "persona_id": 6, "persona_name": "James Wilson", "age": 67, "income_range": "$150,000-$199,999",
+      "housing_type": "Homeowner", "commute_mode": "Drives alone", "education": "Bachelor's degree", "ethnicity": "White",
+      "stance": "OPPOSE", "impact_level": "CRITICAL",
+      "reasoning": "At my age, I can't bike — I need my car to get to my doctor's office on Main Street. Removing parking would make medical appointments extremely difficult. This policy ignores the needs of elderly residents who depend on close parking access.",
+      "would_attend": "NO", "suggested_modification": "Build a new parking structure before removing street spots to maintain net parking capacity"
+    },
+    {
+      "persona_id": 7, "persona_name": "Aaliyah Jefferson", "age": 38, "income_range": "$50,000-$74,999",
+      "housing_type": "Renter", "commute_mode": "Public transit", "education": "Associate's degree", "ethnicity": "Black",
+      "stance": "SUPPORT", "impact_level": "MEDIUM",
+      "reasoning": "I take the bus and would benefit from less car traffic downtown. Protected bike lanes could give my kids a safe way to get to school. Less traffic also means cleaner air in our neighborhood near Main Street.",
+      "would_attend": "YES", "suggested_modification": "Reserve accessible parking spots near medical offices for disabled and elderly residents"
+    },
+    {
+      "persona_id": 8, "persona_name": "Wei Zhang", "age": 42, "income_range": "$150,000-$199,999",
+      "housing_type": "Homeowner", "commute_mode": "Drives alone", "education": "Graduate degree", "ethnicity": "Asian",
+      "stance": "OPPOSE", "impact_level": "MEDIUM",
+      "reasoning": "I drive my kids to activities downtown every weekend and rely on street parking. The parking garage is inconvenient and expensive for short trips. I support the concept of bike lanes but not at this scale all at once.",
+      "would_attend": "YES", "suggested_modification": "Create loading zones for delivery trucks so they don't block the bike lanes"
+    },
+    {
+      "persona_id": 9, "persona_name": "Karen Thompson", "age": 51, "income_range": "$100,000-$149,999",
+      "housing_type": "Homeowner", "commute_mode": "Drives alone", "education": "Bachelor's degree", "ethnicity": "White",
+      "stance": "OPPOSE", "impact_level": "HIGH",
+      "reasoning": "I run a boutique on Main Street and my customers are mostly older women who drive. Removing parking would devastate my foot traffic. The city should invest in a parking solution before taking spots away.",
+      "would_attend": "NO", "suggested_modification": "Install traffic-calming measures on residential streets to prevent cut-through traffic"
+    },
+    {
+      "persona_id": 10, "persona_name": "Carlos Martinez", "age": 35, "income_range": "$50,000-$74,999",
+      "housing_type": "Renter", "commute_mode": "Carpool", "education": "High school diploma", "ethnicity": "Hispanic",
+      "stance": "SUPPORT", "impact_level": "MEDIUM",
+      "reasoning": "I carpool to work so parking isn't a big issue for me. Bike lanes would give my family a safer option for getting around on weekends. Our neighborhood needs more infrastructure that doesn't revolve around car ownership.",
+      "would_attend": "NO", "suggested_modification": "Offer tax incentives to downtown businesses that install bike racks for customers"
+    },
+    {
+      "persona_id": 11, "persona_name": "Jessica Anderson", "age": 27, "income_range": "$75,000-$99,999",
+      "housing_type": "Renter", "commute_mode": "Other", "education": "Bachelor's degree", "ethnicity": "White",
+      "stance": "SUPPORT", "impact_level": "LOW",
+      "reasoning": "I use an e-scooter to commute and protected lanes would make my ride much safer. Downtown could become a more vibrant, people-friendly space instead of a car storage lot. This is exactly the kind of forward-thinking infrastructure investment we need.",
+      "would_attend": "YES", "suggested_modification": "Add greenery and benches along the bike lane to create a pleasant community space"
+    },
+    {
+      "persona_id": 12, "persona_name": "DeShawn Williams", "age": 22, "income_range": "Under $10,000",
+      "housing_type": "Renter", "commute_mode": "Public transit", "education": "Some college", "ethnicity": "Black",
+      "stance": "SUPPORT", "impact_level": "HIGH",
+      "reasoning": "I can't afford a car so I bike everywhere — but the current roads feel dangerous. Protected bike lanes would literally save my life. This is an equity issue: people who can't afford cars deserve safe transportation infrastructure too.",
+      "would_attend": "NO", "suggested_modification": "Ensure the bike lanes connect to the existing trail network for practical commuting routes"
+    },
+    {
+      "persona_id": 13, "persona_name": "Linda Park", "age": 48, "income_range": "$200,000+",
+      "housing_type": "Homeowner", "commute_mode": "Drives alone", "education": "Graduate degree", "ethnicity": "Asian",
+      "stance": "OPPOSE", "impact_level": "MEDIUM",
+      "reasoning": "I appreciate the environmental goals but the execution seems rushed. Removing 200 spots without alternative parking solutions will create chaos. A phased approach would let us evaluate the real impact on businesses and traffic flow.",
+      "would_attend": "YES", "suggested_modification": "Run a 6-month pilot on two blocks before committing to the full Main Street conversion"
+    },
+    {
+      "persona_id": 14, "persona_name": "Maria Santos", "age": 19, "income_range": "Under $10,000",
+      "housing_type": "Renter", "commute_mode": "Walks", "education": "Some college", "ethnicity": "Hispanic",
+      "stance": "SUPPORT", "impact_level": "HIGH",
+      "reasoning": "As a college student without a car, I walk and bike everywhere. The current roads are terrifying for cyclists — I've had multiple close calls. Bike lanes would transform my daily commute from dangerous to enjoyable.",
+      "would_attend": "NO", "suggested_modification": "Include better bus stop infrastructure since many low-income residents rely on public transit"
+    },
+    {
+      "persona_id": 15, "persona_name": "Tyler Moore", "age": 33, "income_range": "$100,000-$149,999",
+      "housing_type": "Homeowner", "commute_mode": "Work from home", "education": "Bachelor's degree", "ethnicity": "White",
+      "stance": "SUPPORT", "impact_level": "LOW",
+      "reasoning": "I work remotely and rarely need parking downtown. When I do go out, I'd rather bike than drive and hunt for a spot. Protected lanes would make our downtown more attractive and could boost property values in the area.",
+      "would_attend": "NO", "suggested_modification": "Add protected intersections at major cross streets — the bike lanes are only safe if the crossings are too"
+    },
+    {
+      "persona_id": 16, "persona_name": "Sakura Kim", "age": 40, "income_range": "$150,000-$199,999",
+      "housing_type": "Homeowner", "commute_mode": "Work from home", "education": "Graduate degree", "ethnicity": "Asian",
+      "stance": "OPPOSE", "impact_level": "MEDIUM",
+      "reasoning": "While I work from home, my spouse drives to their office downtown and parks on Main Street daily. The added cost and inconvenience of garage parking would strain our budget. I'd support a smaller-scale pilot first.",
+      "would_attend": "NO", "suggested_modification": "Create a community advisory board with residents from all income levels to oversee implementation"
+    },
+    {
+      "persona_id": 17, "persona_name": "Brandon Scott", "age": 55, "income_range": "$50,000-$74,999",
+      "housing_type": "Homeowner", "commute_mode": "Drives alone", "education": "High school diploma", "ethnicity": "White",
+      "stance": "OPPOSE", "impact_level": "HIGH",
+      "reasoning": "I've been parking on Main Street for 20 years to get to my job at the hardware store. There's no good alternative — the garage is a 10-minute walk. Bike lanes sound nice in theory but most people here drive, not bike.",
+      "would_attend": "NO", "suggested_modification": "Extend bike lane hours — make them car-free during peak hours but allow parking during off-peak"
+    },
+    {
+      "persona_id": 18, "persona_name": "Valentina Cruz", "age": 36, "income_range": "$25,000-$34,999",
+      "housing_type": "Renter", "commute_mode": "Carpool", "education": "Associate's degree", "ethnicity": "Hispanic",
+      "stance": "SUPPORT", "impact_level": "MEDIUM",
+      "reasoning": "I carpool to save money and don't need downtown parking most days. As a parent, I worry about my kids biking on busy streets. Protected lanes would let them ride safely to school and the library.",
+      "would_attend": "NO", "suggested_modification": "Partner with local schools to create a safe-routes-to-school program using the new bike lanes"
+    },
+    {
+      "persona_id": 19, "persona_name": "Andrew Davis", "age": 23, "income_range": "$25,000-$34,999",
+      "housing_type": "Renter", "commute_mode": "Work from home", "education": "Bachelor's degree", "ethnicity": "White",
+      "stance": "SUPPORT", "impact_level": "LOW",
+      "reasoning": "I freelance from home and bike for exercise. Having protected lanes downtown would encourage me to bike for errands instead of driving. It's better for my health, my wallet, and the environment.",
+      "would_attend": "NO", "suggested_modification": "Mandate that ride-share pickup/dropoff zones are clearly marked to avoid conflicts with cyclists"
+    },
+    {
+      "persona_id": 20, "persona_name": "Jordan Taylor", "age": 44, "income_range": "$200,000+",
+      "housing_type": "Homeowner", "commute_mode": "Work from home", "education": "Graduate degree", "ethnicity": "White",
+      "stance": "OPPOSE", "impact_level": "LOW",
+      "reasoning": "I work from home but use downtown parking when visiting clients or dining out. While I understand the appeal of bike lanes, the parking reduction seems excessive. I'd rather see a balanced approach that serves both drivers and cyclists.",
+      "would_attend": "YES", "suggested_modification": "Install real-time parking availability signs to direct drivers to open spots more efficiently"
+    }
+  ]
+}

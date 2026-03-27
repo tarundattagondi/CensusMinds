@@ -7,8 +7,8 @@ const api = axios.create({
   },
 });
 
-export async function startSimulation(zipCode, policyDescription, numPersonas = 100) {
-  const response = await api.post('/api/simulate', {
+export async function startSimulation(zipCode, policyDescription, numPersonas = 100, demo = false) {
+  const response = await api.post(`/api/simulate${demo ? '?demo=true' : ''}`, {
     zip_code: zipCode,
     policy_description: policyDescription,
     num_personas: numPersonas,

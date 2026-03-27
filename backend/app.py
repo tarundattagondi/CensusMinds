@@ -1,6 +1,8 @@
 import uuid
+import json
 import asyncio
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from pathlib import Path
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
@@ -57,9 +59,26 @@ async def get_census_data(zip_code: str):
 
 
 @app.post("/api/simulate")
-async def create_simulation(req: SimulationRequest, background_tasks: BackgroundTasks):
-    """Start a new policy simulation. Returns a simulation ID to poll for results."""
+async def create_simulation(req: SimulationRequest, background_tasks: BackgroundTasks, demo: bool = Query(default=False)):
+    """Start a new policy simulation. Use ?demo=true to load pre-computed demo results."""
     sim_id = str(uuid.uuid4())
+
+    if demo:
+        demo_path = Path(__file__).resolve().parent / "data" / "demo_simulation.json"
+        with open(demo_path) as f:
+            demo_results = json.load(f)
+        simulations[sim_id] = {
+            "id": sim_id,
+            "status": "complete",
+            "zip_code": demo_results["zip_code"],
+            "policy": demo_results["policy"],
+            "num_personas": demo_results["summary"]["total_personas"],
+            "progress": 100,
+            "results": demo_results,
+            "error": None,
+        }
+        return {"sim_id": sim_id, "status": "complete"}
+
     simulations[sim_id] = {
         "id": sim_id,
         "status": "pending",
