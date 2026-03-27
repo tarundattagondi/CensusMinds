@@ -1,91 +1,74 @@
-"""Database service — saves and retrieves simulation results from Supabase."""
+"""Database service — saves and retrieves simulation results using local JSON storage."""
 
-import os
 import json
 from datetime import datetime, timezone
-from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
-
-SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-
-_client = None
+STORAGE_FILE = Path(__file__).resolve().parent.parent / "data" / "simulations.json"
 
 
-def _get_client():
-    """Lazy-initialize the Supabase client."""
-    global _client
-    if _client is None:
-        if not SUPABASE_URL or not SUPABASE_KEY:
-            return None
-        from supabase import create_client
-        _client = create_client(SUPABASE_URL, SUPABASE_KEY)
-    return _client
+def _read_store() -> list[dict]:
+    """Read all simulations from the local JSON file."""
+    if not STORAGE_FILE.exists():
+        return []
+    with open(STORAGE_FILE) as f:
+        try:
+            return json.load(f)
+        except (json.JSONDecodeError, ValueError):
+            return []
+
+
+def _write_store(data: list[dict]):
+    """Write all simulations to the local JSON file."""
+    with open(STORAGE_FILE, "w") as f:
+        json.dump(data, f, indent=2)
 
 
 def save_simulation(sim_id: str, zip_code: str, policy: str, results: dict) -> bool:
-    """Save a completed simulation to Supabase. Returns True on success."""
-    client = _get_client()
-    if not client:
-        return False
-
+    """Save a completed simulation. Returns True on success."""
     summary = results.get("summary", {})
-    try:
-        client.table("simulations").insert({
-            "id": sim_id,
-            "zip_code": zip_code,
-            "policy": policy,
-            "support_pct": summary.get("support_pct", 0),
-            "oppose_pct": summary.get("oppose_pct", 0),
-            "num_personas": summary.get("total_personas", 0),
-            "results": json.dumps(results),
-            "created_at": datetime.now(timezone.utc).isoformat(),
-        }).execute()
+    store = _read_store()
+
+    # Don't save duplicates
+    if any(s["id"] == sim_id for s in store):
         return True
-    except Exception as e:
-        print(f"Failed to save simulation to Supabase: {e}")
-        return False
+
+    store.insert(0, {
+        "id": sim_id,
+        "zip_code": zip_code,
+        "policy": policy,
+        "support_pct": summary.get("support_pct", 0),
+        "oppose_pct": summary.get("oppose_pct", 0),
+        "num_personas": summary.get("total_personas", 0),
+        "results": results,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+    _write_store(store)
+    return True
 
 
 def list_simulations(limit: int = 50) -> list[dict]:
-    """List past simulations, most recent first."""
-    client = _get_client()
-    if not client:
-        return []
-
-    try:
-        response = (
-            client.table("simulations")
-            .select("id, zip_code, policy, support_pct, oppose_pct, num_personas, created_at")
-            .order("created_at", desc=True)
-            .limit(limit)
-            .execute()
-        )
-        return response.data
-    except Exception as e:
-        print(f"Failed to list simulations from Supabase: {e}")
-        return []
+    """List past simulations (without full results), most recent first."""
+    store = _read_store()
+    out = []
+    for s in store[:limit]:
+        out.append({
+            "id": s["id"],
+            "zip_code": s["zip_code"],
+            "policy": s["policy"],
+            "support_pct": s.get("support_pct", 0),
+            "oppose_pct": s.get("oppose_pct", 0),
+            "num_personas": s.get("num_personas", 0),
+            "created_at": s.get("created_at", ""),
+        })
+    return out
 
 
 def get_simulation(sim_id: str) -> dict | None:
-    """Retrieve a specific simulation's full results."""
-    client = _get_client()
-    if not client:
-        return None
-
-    try:
-        response = (
-            client.table("simulations")
-            .select("*")
-            .eq("id", sim_id)
-            .single()
-            .execute()
-        )
-        row = response.data
-        if row and row.get("results"):
-            row["results"] = json.loads(row["results"])
-        return row
-    except Exception as e:
-        print(f"Failed to get simulation from Supabase: {e}")
-        return None
+    """Retrieve a specific simulation's full data."""
+    store = _read_store()
+    for s in store:
+        if s["id"] == sim_id:
+            return s
+    return None

@@ -148,6 +148,7 @@ async def create_simulation(req: SimulationRequest, background_tasks: Background
             "results": demo_results,
             "error": None,
         }
+        save_simulation(sim_id, demo_results["zip_code"], demo_results["policy"], demo_results)
         return {"sim_id": sim_id, "status": "complete"}
 
     # Check rate limit (skip if user provides their own key)

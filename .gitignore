@@ -1,3 +1,7 @@
+# CensusMinds local data
+backend/data/simulations.json
+backend/data/rate_limit.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
