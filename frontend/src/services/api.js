@@ -1,11 +1,15 @@
 import axios from 'axios';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+export { API_BASE };
 
 export async function startSimulation(zipCode, policyDescription, numPersonas = 100, demo = false, anthropicApiKey = null) {
   const body = {

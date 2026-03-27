@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSimulationStatus } from '../services/api';
+import { getSimulationStatus, API_BASE } from '../services/api';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
 } from 'recharts';
@@ -275,7 +275,7 @@ export default function Results() {
           </div>
           <div className="flex gap-3 shrink-0">
             <a
-              href={`http://localhost:8000/api/export/${id}/pdf`}
+              href={`${API_BASE}/api/export/${id}/pdf`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm text-white transition-colors flex items-center gap-2"
@@ -286,7 +286,7 @@ export default function Results() {
               Download PDF
             </a>
             <a
-              href={`http://localhost:8000/api/export/${id}/csv`}
+              href={`${API_BASE}/api/export/${id}/csv`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm text-white transition-colors flex items-center gap-2"
