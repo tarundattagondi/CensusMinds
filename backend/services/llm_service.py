@@ -9,9 +9,13 @@ from anthropic import AsyncAnthropic
 
 load_dotenv()
 
-client = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-
+DEFAULT_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 MODEL = "claude-sonnet-4-20250514"
+
+
+def _get_client(api_key: str | None = None) -> AsyncAnthropic:
+    """Get an Anthropic client, using the provided key or the default."""
+    return AsyncAnthropic(api_key=api_key or DEFAULT_API_KEY)
 
 
 def _build_system_prompt(persona: dict) -> str:
@@ -53,7 +57,6 @@ def _build_user_prompt(policy: str) -> str:
 
 def _parse_response(text: str, persona: dict) -> dict:
     """Parse the LLM response into a structured dictionary."""
-    # Try to extract JSON from the response
     json_match = re.search(r'\{[\s\S]*\}', text)
     if json_match:
         try:
@@ -76,7 +79,6 @@ def _parse_response(text: str, persona: dict) -> dict:
         except json.JSONDecodeError:
             pass
 
-    # Fallback if JSON parsing fails
     return {
         "persona_id": persona["id"],
         "persona_name": persona["name"],
@@ -94,8 +96,9 @@ def _parse_response(text: str, persona: dict) -> dict:
     }
 
 
-async def simulate_persona(persona: dict, policy: str) -> dict:
+async def simulate_persona(persona: dict, policy: str, api_key: str | None = None) -> dict:
     """Run a single persona through the LLM simulation."""
+    client = _get_client(api_key)
     response = await client.messages.create(
         model=MODEL,
         max_tokens=300,
@@ -106,7 +109,7 @@ async def simulate_persona(persona: dict, policy: str) -> dict:
     return _parse_response(text, persona)
 
 
-async def simulate_batch(personas: list[dict], policy: str, batch_size: int = 10) -> list[dict]:
+async def simulate_batch(personas: list[dict], policy: str, batch_size: int = 10, api_key: str | None = None) -> list[dict]:
     """
     Run all personas through the LLM simulation in parallel batches.
     Processes batch_size personas concurrently to respect rate limits.
@@ -115,12 +118,11 @@ async def simulate_batch(personas: list[dict], policy: str, batch_size: int = 10
     for i in range(0, len(personas), batch_size):
         batch = personas[i : i + batch_size]
         batch_results = await asyncio.gather(
-            *[simulate_persona(p, policy) for p in batch],
+            *[simulate_persona(p, policy, api_key=api_key) for p in batch],
             return_exceptions=True,
         )
         for j, result in enumerate(batch_results):
             if isinstance(result, Exception):
-                # Log the error and create a fallback response
                 persona = batch[j]
                 results.append({
                     "persona_id": persona["id"],

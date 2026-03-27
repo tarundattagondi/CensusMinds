@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { startSimulation } from '../services/api';
+import { startSimulation, getRateLimit } from '../services/api';
 
 const features = [
   {
@@ -38,6 +38,17 @@ export default function Landing() {
   const [policy, setPolicy] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [userApiKey, setUserApiKey] = useState('');
+  const [rateLimit, setRateLimit] = useState(null);
+
+  useEffect(() => {
+    getRateLimit()
+      .then(setRateLimit)
+      .catch(() => {});
+  }, []);
+
+  const rateLimitReached = rateLimit && rateLimit.remaining <= 0 && !userApiKey.trim();
 
   async function handleDemo() {
     setLoading(true);
@@ -60,7 +71,11 @@ export default function Landing() {
     setError('');
     setLoading(true);
     try {
-      const data = await startSimulation(zipCode.trim(), policy.trim());
+      const key = userApiKey.trim() || null;
+      const data = await startSimulation(zipCode.trim(), policy.trim(), 100, false, key);
+      if (data.remaining !== undefined) {
+        setRateLimit(prev => prev ? { ...prev, remaining: data.remaining } : prev);
+      }
       navigate(`/loading`, { state: { simId: data.sim_id, zipCode, policy } });
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to start simulation. Is the backend running?');
@@ -117,13 +132,76 @@ export default function Landing() {
             <p className="text-red-400 text-sm mb-4">{error}</p>
           )}
 
+          {rateLimitReached && (
+            <div className="mb-4 p-3 bg-red-950/40 border border-red-800 rounded-lg">
+              <p className="text-red-400 text-sm">
+                Daily simulation limit reached. Use demo mode or{' '}
+                <button type="button" onClick={() => setShowAdvanced(true)} className="underline cursor-pointer">
+                  provide your own API key
+                </button>{' '}
+                for unlimited simulations.
+              </p>
+            </div>
+          )}
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || rateLimitReached}
             className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:cursor-not-allowed rounded-lg text-white font-semibold text-lg transition-colors cursor-pointer"
           >
             {loading ? 'Starting Simulation...' : 'Simulate'}
           </button>
+
+          {/* Rate limit counter */}
+          {rateLimit && !userApiKey.trim() && (
+            <p className="text-xs text-gray-500 text-center mt-2">
+              {rateLimit.remaining}/{rateLimit.limit} free simulations remaining today
+            </p>
+          )}
+          {userApiKey.trim() && (
+            <p className="text-xs text-green-500 text-center mt-2">
+              Using your API key — unlimited simulations
+            </p>
+          )}
+
+          {/* Advanced section */}
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="text-sm text-gray-500 hover:text-gray-300 transition-colors cursor-pointer flex items-center gap-1 mx-auto"
+            >
+              <svg
+                className={`w-3 h-3 transition-transform ${showAdvanced ? 'rotate-90' : ''}`}
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              Advanced
+            </button>
+
+            {showAdvanced && (
+              <div className="mt-3 p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
+                <label htmlFor="apikey" className="block text-xs font-medium text-gray-400 mb-1.5">
+                  Your Anthropic API Key (optional)
+                </label>
+                <input
+                  id="apikey"
+                  type="password"
+                  value={userApiKey}
+                  onChange={(e) => setUserApiKey(e.target.value)}
+                  placeholder="sk-ant-..."
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                />
+                <p className="text-xs text-gray-500 mt-1.5">
+                  Provide your own key for unlimited simulations.{' '}
+                  <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
+                    Get one free at console.anthropic.com
+                  </a>
+                </p>
+              </div>
+            )}
+          </div>
 
           <div className="mt-4 text-center">
             <button

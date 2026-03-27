@@ -3,6 +3,7 @@
 import uuid
 import json
 import asyncio
+from datetime import date
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,16 +34,52 @@ app.add_middleware(
 census_cache: dict[str, dict] = {}
 simulations: dict[str, dict] = {}
 
+# Rate limiting
+DAILY_LIMIT = 5
+RATE_LIMIT_FILE = Path(__file__).resolve().parent / "data" / "rate_limit.json"
+
+
+def _get_rate_limit() -> dict:
+    """Read the current rate limit state from disk."""
+    if RATE_LIMIT_FILE.exists():
+        with open(RATE_LIMIT_FILE) as f:
+            data = json.load(f)
+        if data.get("date") == str(date.today()):
+            return data
+    return {"date": str(date.today()), "count": 0}
+
+
+def _increment_rate_limit():
+    """Increment the daily simulation counter."""
+    data = _get_rate_limit()
+    data["count"] += 1
+    with open(RATE_LIMIT_FILE, "w") as f:
+        json.dump(data, f)
+
+
+def _remaining_simulations() -> int:
+    """Return how many free simulations are left today."""
+    data = _get_rate_limit()
+    return max(0, DAILY_LIMIT - data["count"])
+
 
 class SimulationRequest(BaseModel):
     zip_code: str
     policy_description: str
     num_personas: int = Field(default=100, ge=1, le=500)
+    anthropic_api_key: str | None = Field(default=None, description="Optional user-provided Anthropic API key")
 
 
 @app.get("/")
 async def health_check():
     return {"status": "healthy", "service": "CensusMinds API"}
+
+
+@app.get("/api/rate-limit")
+async def get_rate_limit():
+    """Return remaining daily simulations."""
+    remaining = _remaining_simulations()
+    return {"remaining": remaining, "limit": DAILY_LIMIT, "date": str(date.today())}
 
 
 @app.get("/api/census/{zip_code}")
@@ -81,6 +118,17 @@ async def create_simulation(req: SimulationRequest, background_tasks: Background
         }
         return {"sim_id": sim_id, "status": "complete"}
 
+    # Check rate limit (skip if user provides their own key)
+    user_key = req.anthropic_api_key
+    if not user_key:
+        remaining = _remaining_simulations()
+        if remaining <= 0:
+            raise HTTPException(
+                status_code=429,
+                detail="Daily simulation limit reached. Please use demo mode or provide your own Anthropic API key.",
+            )
+        _increment_rate_limit()
+
     simulations[sim_id] = {
         "id": sim_id,
         "status": "pending",
@@ -92,8 +140,8 @@ async def create_simulation(req: SimulationRequest, background_tasks: Background
         "error": None,
     }
 
-    background_tasks.add_task(_run_simulation, sim_id, req.zip_code, req.policy_description, req.num_personas)
-    return {"sim_id": sim_id, "status": "pending"}
+    background_tasks.add_task(_run_simulation, sim_id, req.zip_code, req.policy_description, req.num_personas, user_key)
+    return {"sim_id": sim_id, "status": "pending", "remaining": _remaining_simulations()}
 
 
 @app.get("/api/simulate/{sim_id}/status")
@@ -120,7 +168,7 @@ async def export_simulation_pdf(sim_id: str):
     )
 
 
-async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas: int):
+async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas: int, api_key: str | None = None):
     """Background task that runs the full simulation pipeline."""
     sim = simulations[sim_id]
     try:
@@ -141,7 +189,7 @@ async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas:
         # Step 3: Run LLM simulation
         sim["status"] = "running_simulation"
         sim["progress"] = 40
-        responses = await simulate_batch(personas, policy, batch_size=10)
+        responses = await simulate_batch(personas, policy, batch_size=10, api_key=api_key)
         sim["progress"] = 85
 
         # Step 4: Aggregate results

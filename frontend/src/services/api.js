@@ -7,12 +7,16 @@ const api = axios.create({
   },
 });
 
-export async function startSimulation(zipCode, policyDescription, numPersonas = 100, demo = false) {
-  const response = await api.post(`/api/simulate${demo ? '?demo=true' : ''}`, {
+export async function startSimulation(zipCode, policyDescription, numPersonas = 100, demo = false, anthropicApiKey = null) {
+  const body = {
     zip_code: zipCode,
     policy_description: policyDescription,
     num_personas: numPersonas,
-  });
+  };
+  if (anthropicApiKey) {
+    body.anthropic_api_key = anthropicApiKey;
+  }
+  const response = await api.post(`/api/simulate${demo ? '?demo=true' : ''}`, body);
   return response.data;
 }
 
@@ -23,6 +27,11 @@ export async function getSimulationStatus(simId) {
 
 export async function getCensusData(zipCode) {
   const response = await api.get(`/api/census/${zipCode}`);
+  return response.data;
+}
+
+export async function getRateLimit() {
+  const response = await api.get('/api/rate-limit');
   return response.data;
 }
 
