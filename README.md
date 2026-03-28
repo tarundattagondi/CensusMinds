@@ -67,15 +67,25 @@ Demo mode is available on the landing page -- try the full dashboard without any
 
 ## Screenshots
 
-> Screenshots coming soon.
+### Landing Page
+*Enter ZIP code and policy description*
 
-| Landing Page | Results Dashboard |
-|:---:|:---:|
-| *Policy input form with ZIP code entry* | *Support/oppose gauge with demographic breakdowns* |
+![Landing Page](docs/screenshots/landing_page.png)
 
-| Persona Cards | Demographic Charts |
-|:---:|:---:|
-| *Individual persona responses with reasoning* | *Bar charts showing breakdown by income and age* |
+### Results Dashboard
+*Support/oppose gauge with summary stats*
+
+![Results Dashboard](docs/screenshots/results_dashboard.png)
+
+### Demographic Breakdowns
+*Charts by income, age, commute mode, and housing*
+
+![Demographic Charts](docs/screenshots/demographic_charts.png)
+
+### Individual Persona Responses
+*Each persona's unique reaction and suggestions*
+
+![Persona Cards](docs/screenshots/persona_cards.png)
 
 ---
 
