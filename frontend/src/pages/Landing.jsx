@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { startSimulation, getRateLimit } from '../services/api';
 
-function handleLogout(navigate) {
-  localStorage.removeItem('censusminds_password');
-  navigate('/login');
-}
-
 const features = [
   {
     title: 'Census-Grounded',
@@ -91,16 +86,10 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Nav */}
-      <div className="max-w-5xl mx-auto px-6 pt-6 flex justify-end gap-4">
+      <div className="max-w-5xl mx-auto px-6 pt-6 flex justify-end">
         <Link to="/history" className="text-sm text-gray-400 hover:text-indigo-400 transition-colors">
-          View Past Simulations
+          View Past Simulations &rarr;
         </Link>
-        <button
-          onClick={() => handleLogout(navigate)}
-          className="text-sm text-gray-500 hover:text-red-400 transition-colors cursor-pointer"
-        >
-          Logout
-        </button>
       </div>
 
       {/* Hero */}

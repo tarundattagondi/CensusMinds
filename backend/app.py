@@ -1,20 +1,17 @@
 """CensusMinds API — FastAPI application for census-grounded policy simulation."""
 
-import os
 import uuid
 import json
 import asyncio
 from datetime import date
 from pathlib import Path
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Request
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
 load_dotenv()
-
-APP_PASSWORD = os.getenv("APP_PASSWORD", "censusminds2026")
 
 from backend.services.census_service import fetch_demographics
 from backend.services.persona_generator import generate_personas
@@ -42,39 +39,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Public paths that don't require authentication
-PUBLIC_PATHS = {"/", "/docs", "/openapi.json", "/api/auth/verify"}
-
-
-@app.middleware("http")
-async def auth_middleware(request: Request, call_next):
-    """Require password for protected endpoints."""
-    path = request.url.path
-    if path in PUBLIC_PATHS or path.startswith("/api/auth/"):
-        return await call_next(request)
-    # Check X-App-Password header
-    password = request.headers.get("x-app-password", "")
-    if password != APP_PASSWORD:
-        return Response(
-            content=json.dumps({"detail": "Unauthorized"}),
-            status_code=401,
-            media_type="application/json",
-        )
-    return await call_next(request)
-
-
-class AuthRequest(BaseModel):
-    password: str
-
-
-@app.post("/api/auth/verify")
-async def verify_password(req: AuthRequest):
-    """Verify the access password."""
-    if req.password == APP_PASSWORD:
-        return {"authorized": True}
-    raise HTTPException(status_code=401, detail="Invalid access code")
-
 
 # In-memory stores
 census_cache: dict[str, dict] = {}
@@ -152,16 +116,13 @@ async def get_simulations_history():
 @app.get("/api/simulations/{sim_id}")
 async def get_saved_simulation(sim_id: str):
     """Retrieve a saved simulation's full results from the database."""
-    # Check in-memory first
     if sim_id in simulations and simulations[sim_id]["status"] == "complete":
         return simulations[sim_id]
 
-    # Check database
     row = get_simulation(sim_id)
     if not row:
         raise HTTPException(status_code=404, detail="Simulation not found")
 
-    # Reconstruct the simulation object for the frontend
     return {
         "id": row["id"],
         "status": "complete",
@@ -196,7 +157,6 @@ async def create_simulation(req: SimulationRequest, background_tasks: Background
         save_simulation(sim_id, demo_results["zip_code"], demo_results["policy"], demo_results)
         return {"sim_id": sim_id, "status": "complete"}
 
-    # Check rate limit (skip if user provides their own key)
     user_key = req.anthropic_api_key
     if not user_key:
         remaining = _remaining_simulations()
@@ -226,7 +186,6 @@ async def create_simulation(req: SimulationRequest, background_tasks: Background
 async def get_simulation_status(sim_id: str):
     """Check the status of a running simulation."""
     if sim_id not in simulations:
-        # Try loading from database
         row = get_simulation(sim_id)
         if row:
             simulations[sim_id] = {
@@ -290,7 +249,6 @@ async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas:
     """Background task that runs the full simulation pipeline."""
     sim = simulations[sim_id]
     try:
-        # Step 1: Fetch census data
         sim["status"] = "fetching_census"
         sim["progress"] = 10
         if zip_code in census_cache:
@@ -299,18 +257,15 @@ async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas:
             census_data = await fetch_demographics(zip_code)
             census_cache[zip_code] = census_data
 
-        # Step 2: Generate personas
         sim["status"] = "generating_personas"
         sim["progress"] = 25
         personas = generate_personas(census_data, n=num_personas)
 
-        # Step 3: Run LLM simulation
         sim["status"] = "running_simulation"
         sim["progress"] = 40
         responses = await simulate_batch(personas, policy, batch_size=10, api_key=api_key)
         sim["progress"] = 85
 
-        # Step 4: Aggregate results
         sim["status"] = "aggregating"
         sim["progress"] = 90
         results = aggregate_results(responses)
@@ -325,7 +280,6 @@ async def _run_simulation(sim_id: str, zip_code: str, policy: str, num_personas:
         sim["progress"] = 100
         sim["results"] = results
 
-        # Step 5: Save to database
         save_simulation(sim_id, zip_code, policy, results)
 
     except Exception as e:
