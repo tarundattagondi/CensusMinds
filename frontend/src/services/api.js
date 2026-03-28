@@ -9,7 +9,21 @@ const api = axios.create({
   },
 });
 
+// Attach password header to every request
+api.interceptors.request.use((config) => {
+  const password = localStorage.getItem('censusminds_password');
+  if (password) {
+    config.headers['x-app-password'] = password;
+  }
+  return config;
+});
+
 export { API_BASE };
+
+export async function verifyPassword(password) {
+  const response = await api.post('/api/auth/verify', { password });
+  return response.data;
+}
 
 export async function startSimulation(zipCode, policyDescription, numPersonas = 100, demo = false, anthropicApiKey = null) {
   const body = {

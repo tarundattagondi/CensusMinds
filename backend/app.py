@@ -1,14 +1,20 @@
 """CensusMinds API — FastAPI application for census-grounded policy simulation."""
 
+import os
 import uuid
 import json
 import asyncio
 from datetime import date
 from pathlib import Path
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
+
+load_dotenv()
+
+APP_PASSWORD = os.getenv("APP_PASSWORD", "censusminds2026")
 
 from backend.services.census_service import fetch_demographics
 from backend.services.persona_generator import generate_personas
@@ -36,6 +42,39 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Public paths that don't require authentication
+PUBLIC_PATHS = {"/", "/docs", "/openapi.json", "/api/auth/verify"}
+
+
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    """Require password for protected endpoints."""
+    path = request.url.path
+    if path in PUBLIC_PATHS or path.startswith("/api/auth/"):
+        return await call_next(request)
+    # Check X-App-Password header
+    password = request.headers.get("x-app-password", "")
+    if password != APP_PASSWORD:
+        return Response(
+            content=json.dumps({"detail": "Unauthorized"}),
+            status_code=401,
+            media_type="application/json",
+        )
+    return await call_next(request)
+
+
+class AuthRequest(BaseModel):
+    password: str
+
+
+@app.post("/api/auth/verify")
+async def verify_password(req: AuthRequest):
+    """Verify the access password."""
+    if req.password == APP_PASSWORD:
+        return {"authorized": True}
+    raise HTTPException(status_code=401, detail="Invalid access code")
+
 
 # In-memory stores
 census_cache: dict[str, dict] = {}
